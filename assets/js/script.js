@@ -1,12 +1,13 @@
 var hours = ["9", "10", "11" ,"12","13", "14", "15", "16", "17"];
 var timer;
 
-// today's date
-var today = moment(new Date()).format("dddd, MMMM Do ");
-
-$("#currentDay").text(today);
 
 function renderCalendar(){
+
+    // today's date
+    var today = moment(new Date()).format("dddd, MMMM Do ");
+
+    $("#currentDay").text(today);
      
     //get current hour and compare to calendar to set color attribute
     var currentHour = " ";
@@ -19,24 +20,30 @@ function renderCalendar(){
     var hourId = "#hour-" + hours[i];
       
         if (parseInt(currentHour) < parseInt(hours[i])) {
-            // change class
-            $(hourId).addClass("future"); 
+
+            // change class to future - green
+            $(hourId).removeClass();
+            $(hourId).addClass("row time-block future");
         } else if (parseInt(currentHour) > parseInt(hours[i])) {
-            // $(hourId).removeClass();
-            $(hourId).addClass("past"); 
+
+            // change class past - gray
+            $(hourId).removeClass();
+            $(hourId).addClass("row time-block past");
 
         } else { 
-            // $(hourId).removeClass(); 
-            $(hourId).addClass("present"); 
-        }
-    
-    };
+            // change class present - red
+            $(hourId).removeClass();
+            $(hourId).addClass("row time-block present");
+  
+        };
+     };
 };
  
- // start time
+ // update calendar every 15 seconds
  function setTime() {
    timer = setInterval(renderCalendar, 15000);
- }
+ };
+
 // Set up the calendar appointments    
 function setUpAppointments() {
 
