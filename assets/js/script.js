@@ -1,79 +1,75 @@
-var hours = ["9", "10", "11" ,"12","13", "14", "15", "16", "17"]
-
+var hours = ["9", "10", "11" ,"12","13", "14", "15", "16", "17"];
+var timer;
 
 // today's date
-var today = moment(new Date()).format("dddd, MMMM Do ")
+var today = moment(new Date()).format("dddd, MMMM Do ");
+
 $("#currentDay").text(today);
 
 function renderCalendar(){
+     
+    //get current hour and compare to calendar to set color attribute
+    var currentHour = " ";
+    var currentHour = moment(new Date()).format("HH") 
 
-//get current hour and compare to calendar to set color attribute
-var currentHour = "";
-var currentHour = moment(new Date()).format("HH") 
-
-// set background colors for calendar - green is future hour, red is current hour, gray is hour in the past
-
-for(var i = 0; i < hours.length; i++) {
-    
-    currentHour = "12"
+    // set background colors for calendar - green is future hour, red is current hour, gray is hour in the past
+    for(var i = 0; i < hours.length; i++) {
+         
+    //set up variable for button
     var hourId = "#hour-" + hours[i];
+      
+        if (parseInt(currentHour) < parseInt(hours[i])) {
+            // change class
+            $(hourId).addClass("future"); 
+        } else if (parseInt(currentHour) > parseInt(hours[i])) {
+            // $(hourId).removeClass();
+            $(hourId).addClass("past"); 
 
-    if (currentHour < hours[i]) {
-        // $(hourId).removeClass();
-        $(hourId).addClass("future"); 
-    } else if (currentHour > hours[i]) {
-        // $(hourId).removeClass();
-        $(hourId).addClass("past"); 
-
-    } else { 
-        // $(hourId).removeClass(); 
-        $(hourId).addClass("present"); 
-    }
+        } else { 
+            // $(hourId).removeClass(); 
+            $(hourId).addClass("present"); 
+        }
     
-
     };
 };
  
  // start time
-function setTime() {
+ function setTime() {
+   timer = setInterval(renderCalendar, 15000);
+ }
+// Set up the calendar appointments    
+function setUpAppointments() {
 
-    // start countdown
-    // create variable to keep track of the time
-    secondsLeft = 60;
-    var timerInterval = setInterval(function() {
-      if (secondsLeft > 0) {
-      
-      
-      // decrement time remaining
-      secondsLeft--;
-  
-      // update the count down
-      timeEl.innerHTML = secondsLeft + " seconds left";
-  
-      } else {
-      // check if time has run out
-      
-        // the clearInterval method.
-        clearInterval(timerInterval);
-        alert("game over");
-        // when the user returns to the page
-        localStorage.setItem("count", totalCorrect);
-        //display score
-      }
-  
-    }, 15000);    
-    
-    
+    // get each row to update the text 
+    $(".time-block").each(function() {
 
+        // get id for this row
+        var id = $(this).attr("id");
+        var appointment = localStorage.getItem(id);
 
+        // If I have an appointment in local storage - update calendar
+        if (appointment !== null) {
+            $(this).children(".description").val(appointment);
+        };
+    });
 
-$(".btn").on("click", function () {
-    // alert($(this).val(".description"))
-    var char = $(this).val();
-    
-});
+    };   
+    // Save calendar appointment event
+    $(document).on("click", ".saveBtn", function() {
 
+        var calText = "";
+        var stgID = "";
+        // get the sibling value in text
+        calText = $(this).prev().val();
+        // get the id of the parent
+        stgID = $(this).parent().attr("id");
+        // update local storage
+        localStorage.setItem(stgID, calText);
+    });
+
+setUpAppointments();
+renderCalendar();
+setTime();
 
 
-setTime()
-renderCalendar()
+
